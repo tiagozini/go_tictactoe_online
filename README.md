@@ -1,28 +1,29 @@
-# Welcome to Revel
+# Welcome to Go Tic-Tac-Toe Online game
 
 ## Getting Started
+    Install Golang in your system if you haven't done it yet, and run
+    the command below:
+        go get github.com/tiagozini/go_tictactoe_online
 
-A high-productivity web framework for the [Go language](http://www.golang.org/).
+### Run the web server that provide the game:
 
-### Start the web server:
+    revel run go_tictactoe_online
 
-    revel run myapp
-
-   Run with <tt>--help</tt> for options.
+    Run with <tt>--help</tt> for options.
 
 ### Go to http://localhost:9000/ and you'll see:
 
-"It works"
+"Welcome to Tic-Tac-Toe Combate"
 
 ### Description of Contents
 
-The default directory structure of a generated Revel application:
+The default directory structure of the game:
 
     myapp               App root
       app               App sources
         controllers     App controllers
-          init.go       Interceptor registration
-        models          App domain models
+          app.go        Interceptor registration
+          reflesh.go    Interceptor for gameroom interactions
         routes          Reverse routes (generated code)
         views           Templates
       tests             Test suites
@@ -30,6 +31,7 @@ The default directory structure of a generated Revel application:
         app.conf        Main configuration file
         routes          Routes definition
       messages          Message files
+      gameroom          The game go clases
       public            Public assets
         css             CSS files
         js              Javascript files
@@ -46,6 +48,10 @@ conf
     * app.conf, the main configuration file for the application, which contains standard configuration parameters
     * routes, the routes definition file.
 
+gameroom
+
+    The gameroom classes directory contains all entities of this game and the business logic of them.
+    Each entity has a separated class file and main entity is the class Game.
 
 messages
 
@@ -61,15 +67,10 @@ test
 
     Tests are kept in the tests directory. Revel provides a testing framework that makes it easy to write and run functional tests against your application.
 
-### Follow the guidelines to start developing your application:
+### This application use Golang and Revel. To know more about these technologies
+consult the links below:
 
-* The README file created within your application.
 * The [Getting Started with Revel](http://revel.github.io/tutorial/index.html).
 * The [Revel guides](http://revel.github.io/manual/index.html).
 * The [Revel sample apps](http://revel.github.io/samples/index.html).
 * The [API documentation](http://revel.github.io/docs/godoc/index.html).
-
-## Contributing
-We encourage you to contribute to Revel! Please check out the [Contributing to Revel
-guide](https://github.com/revel/revel/blob/master/CONTRIBUTING.md) for guidelines about how
-to proceed. [Join us](https://groups.google.com/forum/#!forum/revel-framework)!
