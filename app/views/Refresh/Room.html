@@ -1,0 +1,193 @@
+{{ set . "title" "Room" }}
+{{ template "header.html" . }}
+<center>
+  <h1>{{ .title }}<span id='challengerNamesText'></span></h1>
+  <h2>Year are {{ .playerLetter }}!</h2>
+  <div id='thread'>
+   <div id='content' >
+    <table border='1' cellpadding = '0' cellspacing= '0' class='{{ .action }}'>
+      {{range $x, $e1 := .game.Movements}}
+        <tr>
+          {{range  $y,  $e2 := . }}
+          <th class='box' data-coordenates='{{ $x }}:{{ $y }}'>{{if eq 1 .}}X{{else if eq 2 .}}O{{end}}</th>
+          {{end}}
+        </tr>
+      {{end}}
+    </table>
+
+    <div id='message'><label>Message:</label><div> {{ .message }}</div></div>
+    {{if eq .action "finished" }}
+    <br />
+    <div id='rematch'><input onclick='askRematch();' value='Rematch' type='button' /></div>
+    {{end}}
+
+    <input type='hidden' value='{{ .refresh }}' id='refresh' />
+    {{with .game}}
+    <input type='hidden' value='{{ .GetChallengerNames }}' id='challengerNamesValue' />
+    {{end}}
+  </div>
+  </div>
+  <div id="dialog-confirm" title="Confirm">
+    <p><span class="message" ></span>
+      <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;" ></span>
+    </p>
+  </div>
+  <div id='dialog-alert' title='Alert'>
+    <p class='message'></p>
+  </div>
+</center>
+<script>
+  function ticTacToeConfirm( message, callback ) {
+    if ( typeof message == 'undefined' ) {
+      message = 'Confirm';
+    }
+    if ( typeof callback == 'undefined' ) {
+      callback = function(b) {};
+    }
+
+    $( '#dialog-confirm p span.message' ).text( message );
+    $( '#dialog-confirm' ).dialog({
+       option : true,
+       resizable: false,
+       height:140,
+       modal: true,
+       buttons: {
+         "Ok": function() {
+           $( this ).dialog( 'close' );
+           callback(true);
+         },
+         "Cancel" : function() {
+           $( this ).dialog( 'close' );
+           callback(false);
+         }
+       }
+    });
+    $( '#dialog-confirm' ).dialog( 'open' );
+  }
+
+  function ticTacToeAlert( message, callback ) {
+    if ( typeof message == "undefined" ) {
+      message = "Alert";
+    }
+    if ( typeof callback == "undefined" ) {
+      callback = function() {};
+    }
+    $( '#dialog-alert p.message' ).text( message );
+    $( '#dialog-alert' ).dialog({
+      modal: true,
+      buttons: {
+        "Ok": function() {
+          $( this ).dialog( "close" );
+          callback();
+        }
+      }
+    });
+    $( '#dialog-alert' ).dialog( 'open' );
+  }
+
+  function runJqueryOfDialogs() {
+    $( '#dialog-confirm, #dialog-alert' ).dialog({
+      autoOpen: false
+    });
+  }
+
+  var bDecideRematch = true;
+
+  function showAlertMessagesAndKickOut() {
+    ticTacToeAlert(
+      $( '#message > div' ).text(),
+      function() {
+        window.location = '/App/Index';
+      }
+    );
+  }
+
+  function applyJQueryEvents() {
+    $( '.playing .box' ).on( 'click' , function() {
+      if ( $(this).html() == '' ) {
+        var arr = $(this).data( 'coordenates' ).split( ':' );
+        var url = '/Refresh/Play?userId={{.user.Id}}&x=' + arr[0] + '&y=' + arr[1];
+        window.location = url;
+      } else {
+        ticTacToeAlert( 'Place already used!' );
+      }
+    });
+
+    $( '.waiting .box, .finished .box' ).on( 'click' , function() {
+      ticTacToeAlert( $( '#message > div' ).text() );
+    });
+
+    if ( $( '#challengerNamesValue' ).val() != '' ) {
+      challengerNames = $( '#challengerNamesValue' ).val().split('|');
+      $("#challengerNamesText").html("('" + challengerNames[0] + "' VS '" +
+        challengerNames[1] + "')");
+    }
+    runJqueryOfDialogs();
+  }
+
+  function decideRedirect() {
+    if ( $('table').hasClass() == 'waiting_rematch' ) {
+      window.location = '/Refresh/AskRematch?userId={{.user.Id}}';
+    }
+    if ( $('input#refresh').val() == '1' ) {
+      window.location = '/Refresh/Room?userId={{.user.Id}}';
+    }
+    if ( $( 'table' ).hasClass( 'waiting_destruction' ) ) {
+      showAlertMessagesAndKickOut();
+    }
+  }
+
+  function runOnStart() {
+    if ( $( 'table' ).hasClass( 'waiting_rematch_answer' ) ) {
+      if ( bDecideRematch ) {
+        decideRematch();
+      }
+    }
+  }
+
+  function askRematch() {
+    window.location = '/Refresh/AskRematch?userId={{.user.Id}}';
+  }
+
+  function decideRematch() {
+    bDecideRematch = false;
+    ticTacToeConfirm(
+      'Your mate ask for rematch. You agree?',
+      proccessDecisionOfRematch
+    );
+  }
+
+  function proccessDecisionOfRematch( decision ) {
+    if ( decision ) {
+      askRematch();
+    } else {
+      window.location = '/Refresh/RejectRematch?userId={{.user.Id}}';
+    }
+    bDecideRematch = true;
+  }
+
+  function init() {
+    applyJQueryEvents()
+    runOnStart();
+  }
+
+  $(document).ready( function () {
+
+    var refresh = function() {
+      decideRedirect();
+      $( '#thread' ).load( '/refresh/room?userId={{.user.Id}} #thread #content', function() {
+          init();
+      });
+    }
+
+    var refreshSession = function() {
+      decideRedirect();
+      $.get( '/refresh/refreshSession?userId={{.user.Id}} #thread #content', function() { } );
+    }
+
+    setInterval( refresh, 2000 );
+    setInterval( refreshSession, 1000 );
+    init();
+  })
+</script>
+{{ template "footer.html" . }}
