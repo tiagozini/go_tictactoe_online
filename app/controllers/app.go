@@ -3,7 +3,7 @@ package controllers
 import (
 	"fmt"
 	"github.com/revel/revel"
-	"go_tictactoe_online/gameroom"
+	"github.com/tiagozini/go_tictactoe_online/gameroom"
 )
 
 type App struct {
@@ -11,12 +11,12 @@ type App struct {
 }
 
 func (c App) Index() revel.Result {
-	greeting := "Welcome to Tic-Tac-Toe Combate"
+	greeting := "Welcome to Tic-Tac-Toe Combat"
 	return c.Render(greeting)
 }
 
 func (c App) Welcome() revel.Result {
-	greeting := "Welcome my place"
+	greeting := "Welcome to my place"
 	id := c.Params.Get("id")
 	return c.Render(greeting, id)
 }

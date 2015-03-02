@@ -3,7 +3,7 @@ package controllers
 import (
 	"fmt"
 	"github.com/revel/revel"
-	"go_tictactoe_online/gameroom"
+	"github.com/tiagozini/go_tictactoe_online/gameroom"
 )
 
 type Refresh struct {
