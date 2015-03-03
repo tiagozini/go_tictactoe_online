@@ -33,7 +33,7 @@ type Game struct {
 	Players          int
 	Id               int
 	Turn             int
-	VitoryOf         int
+	VictoryOf        *User
 	Movements        [3][3]int
 	RematchDecision  *Rematch
 	BothConfirmation *BothConfirmation
@@ -134,47 +134,51 @@ func DoMove(game *Game, user *User, positionX int, positionY int) {
 		}
 
 		b := false
-
+		playerId := NO_PLAYER
 		if !b && (game.Movements[0][0] != NO_PLAYER && game.Movements[0][0] == game.Movements[0][1] && game.Movements[0][1] == game.Movements[0][2]) {
 			b = true
-			game.VitoryOf = game.Movements[0][0]
+			playerId = game.Movements[0][0]
 		}
 		if !b && (game.Movements[1][0] != NO_PLAYER && game.Movements[1][0] == game.Movements[1][1] && game.Movements[1][1] == game.Movements[1][2]) {
 			b = true
-			game.VitoryOf = game.Movements[1][0]
+			playerId = game.Movements[1][0]
 		}
 		if !b && (game.Movements[2][0] != NO_PLAYER && game.Movements[2][0] == game.Movements[2][1] && game.Movements[2][1] == game.Movements[2][2]) {
 			b = true
-			game.VitoryOf = game.Movements[2][0]
+			playerId = game.Movements[2][0]
 		}
 
 		//vertical
 		if !b && (game.Movements[0][0] != NO_PLAYER && game.Movements[0][0] == game.Movements[1][0] && game.Movements[1][0] == game.Movements[2][0]) {
 			b = true
-			game.VitoryOf = game.Movements[0][0]
+			playerId = game.Movements[0][0]
 		}
 		if !b && (game.Movements[0][1] != NO_PLAYER && game.Movements[0][1] == game.Movements[1][1] && game.Movements[1][1] == game.Movements[2][1]) {
 			b = true
-			game.VitoryOf = game.Movements[0][1]
+			playerId = game.Movements[0][1]
 		}
 		if !b && (game.Movements[0][2] != NO_PLAYER && game.Movements[0][2] == game.Movements[1][2] && game.Movements[1][2] == game.Movements[2][2]) {
 			b = true
-			game.VitoryOf = game.Movements[0][2]
+			playerId = game.Movements[0][2]
 		}
 
 		//diagonal
 		if !b && (game.Movements[0][0] != NO_PLAYER && game.Movements[0][0] == game.Movements[1][1] && game.Movements[1][1] == game.Movements[2][2]) {
 			b = true
-			game.VitoryOf = game.Movements[0][0]
+			playerId = game.Movements[0][0]
 		}
 		if !b && (game.Movements[0][2] != NO_PLAYER && game.Movements[0][2] == game.Movements[1][1] && game.Movements[1][1] == game.Movements[2][0]) {
 			b = true
-			game.VitoryOf = game.Movements[0][2]
+			playerId = game.Movements[0][2]
 		}
 
 		if b {
 			game.State = GAME_FINISHED
-			game.VitoryOf = turn
+			if playerId == X_PLAYER {
+				game.VictoryOf = game.XPlayer
+			} else if playerId == X_PLAYER {
+				game.VictoryOf = game.CirclePlayer
+			}
 		}
 	}
 }

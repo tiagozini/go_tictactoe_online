@@ -25,7 +25,7 @@ func (c Refresh) Room(userId int) revel.Result {
 	}
 	switch {
 	case game.State == gameroom.GAME_FINISHED:
-		message = "Game Finished!"
+		message = "Victory of " + game.VictoryOf.Nickname + "!"
 		action = "finished"
 	case game.State == gameroom.PLAYER_WAITING ||
 		game.State == gameroom.GAME_STARTED:
