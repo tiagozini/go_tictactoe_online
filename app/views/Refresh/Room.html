@@ -41,4 +41,28 @@ userId = {{ .user.Id }}
     <p class='message'></p>
   </div>
 </center>
+<script>
+
+  $(document).ready( function () {
+
+    var refresh = function() {
+      if ( !decideRedirect()) {
+        $( '#thread' ).load( '/refresh/room?userId=' + userId + ' #thread #content', function() {
+            init();
+        });
+      }
+    }
+
+    var refreshSession = function() {
+      if ( !decideRedirect() ) {
+        $.get( '/refresh/refreshSession?userId=' + userId + ' #thread #content', function() { } );
+      }
+    }
+
+    setInterval( refresh, 2000 );
+    setInterval( refreshSession, 1000 );
+    init();
+  })
+
+</script>
 {{ template "footer.html" . }}

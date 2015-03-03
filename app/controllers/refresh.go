@@ -35,12 +35,12 @@ func (c Refresh) Room(userId int) revel.Result {
 				message = "Play!!!!"
 				action = "playing"
 			} else {
-				message = "Wait your mate do his move..."
 				action = "waiting"
+				message = "Wait your mate do his move..."
 			}
 		} else if game.Players == 1 {
-			message = "Wait the other player enter..."
 			action = "waiting"
+			message = "Wait the other player enter..."
 		}
 	case game.State == gameroom.WAITING_REMATCH:
 
@@ -108,7 +108,6 @@ func (c Refresh) RejectRematch(userId int) revel.Result {
 	users := gameroom.GetUsers()
 	user := users[userId]
 	user.Game.State = gameroom.WAITING_DESTRUCTION
-
 	return c.Redirect(fmt.Sprintf("/App/Index"))
 }
 

@@ -103,8 +103,9 @@
     }
     if ( $( 'table' ).hasClass( 'waiting_destruction' ) ) {
       showAlertMessagesAndKickOut();
-      return 0;
+      return true;
     }
+    return false;
   }
 
   function agreeWithRematch() {
@@ -138,22 +139,3 @@
     applyJQueryEvents()
     runOnStart();
   }
-
-  $(document).ready( function () {
-
-    var refresh = function() {
-      decideRedirect();
-      $( '#thread' ).load( '/refresh/room?userId=' + userId + ' #thread #content', function() {
-          init();
-      });
-    }
-
-    var refreshSession = function() {
-      decideRedirect();
-      $.get( '/refresh/refreshSession?userId=' + userId + ' #thread #content', function() { } );
-    }
-
-    setInterval( refresh, 2000 );
-    setInterval( refreshSession, 1000 );
-    init();
-})
